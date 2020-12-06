@@ -1,3 +1,9 @@
+let defaultBrushValues = {
+    shape: 'ellipse',
+    width: 100,
+    height: 100
+};
+let brushValues = defaultBrushValues;
 /**
  * Sets up the P5 environment.
  *
@@ -8,7 +14,9 @@
 function setup()
 {
 	createCanvas(600, 600);
-	fill(255, 255, 255);
+    background(0, 0, 0);
+    fill(255, 255, 255);
+    brush(defaultBrushValues);
 
 }
 
@@ -19,8 +27,7 @@ function setup()
  */
 function draw()
 {
-    background(0, 0, 0);
-    ellipse(mouseX, mouseY, 100, 100);
+    brush(brushValues);
 }
 
 /**
@@ -30,6 +37,8 @@ function draw()
  */
 function mousePressed(){
     randomFillRGBA();
+    brushValues = randomBrushValues();
+    console.log(width, height);
 }
 
 /**
@@ -38,7 +47,8 @@ function mousePressed(){
  * @returns void
  */
 function keyPressed(){
-    fill(255, 255, 255);
+    //fill(255, 255, 255);
+    //randomBrush();
 }
 
 /**
@@ -49,7 +59,7 @@ function keyPressed(){
  * @returns int a random number from 0-255.
  */
 function eightBitRandomNumber() {
-    return randomNumber(255,0);
+    return randomNumber(0, 255);
 }
 
 /**
@@ -62,7 +72,7 @@ function eightBitRandomNumber() {
  * @returns float a random floating point number ranging from 0 to 1.
  */
 function randomPseudoProbability( decimals = 2) {
-    let number = randomNumber(100,0) / 100;
+    let number = randomNumber(0,100) / 100;
     number = number.toFixed(decimals);
     return (number);
 }
@@ -82,13 +92,51 @@ function randomFillRGBA() {
 }
 
 /**
+ * Creates a "brush" of a specific size and shape.
+ *
+ * @description Creates a "brush" with a specific size and shape.
+ *
+ * @returns void
+ */
+function brush( brushValues = randomBrushValues() ) {
+    console.log(brushValues);
+    if ( brushValues.shape === 'ellipse'){
+        ellipse(mouseX, mouseY, brushValues.width, brushValues.height);
+    } else {
+        rect(mouseX - (brushValues.width/2), mouseY - (brushValues.height/2), brushValues.width, brushValues.height);
+    }
+}
+
+/**
+ * Changes the "brush" to a random size and shape.
+ *
+ * @description Changes the "brush" to a random size between 30 and 450 pixels and it's shape between circle or rectangle.
+ *
+ * @requires randomNumber.
+ * @requires randomPseudoProbability.
+ *
+ * @returns void
+ */
+function randomBrushValues() {
+    let brushValues = {
+    // a random shape. 0 for ellipse, 1 for rect (rectangle).
+        shape: randomNumber() === 0 ? 'ellipse': 'rect',
+        // a random width between 30-450
+        width: randomNumber(30, 450),
+        // a random height between 30-450
+        height: randomNumber(30, 450)
+    };
+    return brushValues;
+}
+
+/**
  * Returns a random integer between a range (defaults 0-1).
  *
- * @description Returns a random integer between a range of a min (defaults to 0) to a max number (defaults to 1).
+ * @description Returns a random integer between a range of a min (defaults to 0) to a max number (defaults to 2).
  *
  * @returns int A random integer between a range.
  */
-function randomNumber(max = 1, min = 0) {
+function randomNumber(min = 0, max = 2) {
     if(min >= max) {
         return max;
     }
